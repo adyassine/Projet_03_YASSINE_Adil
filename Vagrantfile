@@ -68,7 +68,7 @@ Vagrant.configure("2") do |config|
     # Build docker image
     config.vm.provision :docker do |docker|
       docker.build_image '/vagrant/.docker/', args: '-t web'
-      docker.run 'web', args: '-it -p 8080:80 -v /var/www/html:/usr/share/nginx/html'
+      docker.run 'web', args: '-it -p 8080:80'
     end
 
 
