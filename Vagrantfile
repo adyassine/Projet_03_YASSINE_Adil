@@ -19,7 +19,8 @@ apt update && apt install -y --no-install-recommends \
     gnupg2 \
     software-properties-common \
     vim \
-    ansible
+    ansible \
+    git
 
 echo "Installing docker via apt repo..."
 curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
@@ -38,7 +39,9 @@ groupadd docker &> /dev/null
 usermod -aG docker vagrant
 usermod -aG adm vagrant
 
-echo 'Welcome to Expert DevOps Website' > /var/www/html/index.html
+# Get Dockerfile
+git clone https://github.com/adyassine/Projet_03_YASSINE_Adil_docker.git /vagrant/docker
+
 echo "Writing docker aliases..."
 cat > /etc/profile.d/00-aliases.sh <<EOF
 alias d="docker"
@@ -67,7 +70,7 @@ Vagrant.configure("2") do |config|
 
     # Build docker image
     config.vm.provision :docker do |docker|
-      docker.build_image '/vagrant/.docker/', args: '-t web'
+      docker.build_image '/vagrant/docker/', args: '-t web'
       docker.run 'web', args: '-it -p 8080:80'
     end
 
