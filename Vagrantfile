@@ -1,15 +1,12 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 #
-# Vagrant box with docker-ce and docker-compose
+# Vagrant box with docker-ce
 #
 # https://docs.docker.com/engine/installation/linux/docker-ce/debian/#install-using-the-repository
-# https://docs.docker.com/compose/install/#install-compose
 #
 
 DOCKER_VERSION = "18.03.1~ce-0~debian"
-COMPOSE_VERSION = "1.25.5"
-
 
 $script = <<SCRIPT
 
@@ -36,25 +33,16 @@ add-apt-repository \
 apt update && apt install -y --no-install-recommends \
     docker-ce=#{DOCKER_VERSION}
 
-echo "Installing docker-compose from source..."
-curl -fsSL https://github.com/docker/compose/releases/download/#{COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
 echo "Adding vagrant user to docker and adm groups..."
 groupadd docker &> /dev/null
 usermod -aG docker vagrant
 usermod -aG adm vagrant
 
+echo 'Welcome to Expert DevOps Website' > /var/www/html/index.html
 echo "Writing docker aliases..."
 cat > /etc/profile.d/00-aliases.sh <<EOF
 alias d="docker"
-alias dc="docker-compose"
 EOF
-
-echo "Install kernel check-config script"
-wget https://github.com/docker/docker/raw/master/contrib/check-config.sh
-chmod +x check-config.sh
-
 echo "Enojy! :)"
 SCRIPT
 
@@ -68,10 +56,21 @@ Vagrant.configure("2") do |config|
     config.vm.box = "debian/buster64"
     config.vm.hostname = "buster-docker"
 
-    private_network_ip = get_ipaddr(config.vm.hostname, "10.10.10.10")
+    private_network_ip = get_ipaddr(config.vm.hostname, "192.168.33.100")
     config.vm.network "private_network", ip: private_network_ip
 
+    # install required software
     config.vm.provision "shell", inline: $script
+
+    # Export 80 HTTP port
+    config.vm.network :forwarded_port, host: 8080, guest: 8080
+
+    # Build docker image
+    config.vm.provision :docker do |docker|
+      docker.build_image '/vagrant/.docker/', args: '-t web'
+      docker.run 'web', args: '-it -p 8080:80 -v /var/www/html:/usr/share/nginx/html'
+    end
+
 
     config.vm.post_up_message = \
       "The private network IP address is: #{private_network_ip}\n\n" \
