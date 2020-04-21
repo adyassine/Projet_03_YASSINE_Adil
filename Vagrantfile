@@ -40,7 +40,7 @@ usermod -aG docker vagrant
 usermod -aG adm vagrant
 
 # Get Dockerfile
-git clone https://github.com/adyassine/Projet_03_YASSINE_Adil_docker.git /vagrant/docker
+git clone https://github.com/adyassine/Projet_03_YASSINE_Adil_docker.git /vagrant/p3-devops.com
 
 echo "Writing docker aliases..."
 cat > /etc/profile.d/00-aliases.sh <<EOF
@@ -70,7 +70,7 @@ Vagrant.configure("2") do |config|
 
     # Build docker image
     config.vm.provision :docker do |docker|
-      docker.build_image '/vagrant/docker/', args: '-t web'
+      docker.build_image '/vagrant/p3-devops.com/', args: '-t web'
       docker.run 'web', args: '-it -p 8080:80'
     end
 
