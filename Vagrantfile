@@ -71,7 +71,7 @@ Vagrant.configure("2") do |config|
     # Build docker image
     config.vm.provision :docker do |docker|
       docker.build_image '/vagrant/p3-devops.com/', args: '-t web'
-      docker.run 'web', args: '-it -p 8080:80'
+      docker.run 'web', args: '-it -p 8080:80 -p 8022:22'
     end
 
 
