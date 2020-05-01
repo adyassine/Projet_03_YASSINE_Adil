@@ -32,6 +32,4 @@ $ vagrant ssh
 $ curl localhost:8080
 $ ssh root@localhost -p 8022 # pwd : root
 ```
-
-
 [![asciicast](https://asciinema.org/a/226229.png)](https://asciinema.org/a/QIpBwip7jgSJMgWi4sq7bUIvO)
