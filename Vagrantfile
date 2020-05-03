@@ -74,7 +74,6 @@ Vagrant.configure("2") do |config|
 
 
     config.vm.post_up_message = \
-      "The private network IP address is: #{private_network_ip}\n\n" \
       "To customize, set the host called '#{config.vm.hostname}'\n" \
       "to the desired IP address in your /etc/hosts and run \n" \
       "'vagrant reload'!\n"
