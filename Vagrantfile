@@ -58,9 +58,7 @@ end
 Vagrant.configure("2") do |config|
     config.vm.box = "debian/buster64"
     config.vm.hostname = "buster-docker"
-
-    private_network_ip = get_ipaddr(config.vm.hostname, "192.168.33.100")
-    config.vm.network "private_network", ip: private_network_ip
+    config.vm.network "private_network", ip: "192.168.33.100"
 
     # install required software
     config.vm.provision "shell", inline: $script
